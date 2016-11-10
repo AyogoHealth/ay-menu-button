@@ -10,3 +10,4 @@ log
 node_modules
 pkg
 tmp
+dist-es5
