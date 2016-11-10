@@ -41,7 +41,7 @@ button element.
 <script src="node_modules/ay-menu-button/dist/index.js"></script>
 <script>
   var buttonElement = document.getElementById('my-button');
-  new MenuButton(buttonElement);
+  MenuButton(buttonElement);
 </script>
 ```
 
@@ -54,7 +54,7 @@ Browserify, RequireJS, and WebPack.
 ```javascript
 var MenuButton = require('ay-menu-button');
 
-new MenuButton(buttonElement);
+MenuButton(buttonElement);
 ```
 
 
@@ -65,7 +65,7 @@ You can import ayMenuButton as an ES6 module with tools that support `jsnext:mai
 ```javascript
 import MenuButton from 'ay-menu-button';
 
-new MenuButton(buttonElement);
+MenuButton(buttonElement);
 ```
 
 

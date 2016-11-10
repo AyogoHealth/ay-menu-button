@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>ayMenuButton</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <script src="./dist/index.js"></script>
+
+        <style>
+            html {
+                font-family: system-ui, -apple-system, sans-serif;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>ayMenuButton</h1>
+
+        <menu id="menu1" type="context">
+            <menuitem>Item 1</menuitem>
+            <menuitem label="Item 2" disabled></menuitem>
+            <menuitem label="Item 3"></menuitem>
+        </menu>
+
+        <p>This is an example of a button with a drop down menu. It is keyboard accessible, and screen-reader friendly.</p>
+        <button id="btn1" data-type="menu" menu="menu1">Open Menu</button>
+
+        <script>
+            var btn = document.getElementById('btn1');
+            MenuButton(btn);
+        </script>
+    </body>
+</html>
