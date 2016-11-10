@@ -131,6 +131,7 @@ export class MenuManager {
         }
 
         let menu = this.curMenu!;
+        let btn = this.curButton!;
 
         // Add the menu to the DOM for measuring
         menu.style.display = 'block';
@@ -149,11 +150,11 @@ export class MenuManager {
             menu.children[i].setAttribute('aria-disabled', menu.children[i].hasAttribute('disabled').toString());
         }
 
-        let btnSize = this.curButton.getBoundingClientRect();
-        let menuSize = this.curMenu.getBoundingClientRect();
-        let wndHeight = window.innerHeight;
-
         requestAnimationFrame(() => {
+            let btnSize = btn.getBoundingClientRect();
+            let menuSize = menu.getBoundingClientRect();
+            let wndHeight = window.innerHeight;
+
             if (btnSize.bottom + menuSize.height > wndHeight) {
                 menu.style.bottom = btnSize.top + 'px';
             } else {
