@@ -3,8 +3,11 @@
 import { MenuManager } from './manager';
 
 export class MenuButtonBehaviour {
-    private el: HTMLButtonElement;
-    private menu : HTMLMenuElement;
+    private el: null | HTMLButtonElement;
+    private menu : null | HTMLMenuElement;
+
+    private clickHandler : null | (() => void);
+    private keyHandler : null | ((e : KeyboardEvent) => void);
 
     constructor(btn : HTMLButtonElement) {
         this.el = btn;
@@ -24,13 +27,30 @@ export class MenuButtonBehaviour {
         this.el.setAttribute('aria-haspopup', 'true');
         this.el.setAttribute('aria-expanded', 'false');
 
-        this.el.addEventListener('click', () => {
-            MenuManager.toggleMenu(this.el, this.menu);
-        });
+        this.clickHandler = () => {
+            MenuManager.toggleMenu(this.el!, this.menu!);
+        };
 
-        this.el.addEventListener('keydown', (e : KeyboardEvent) => {
+        this.keyHandler = (e : KeyboardEvent) => {
             this.buttonKeypressListener(e);
-        });
+        };
+
+        this.el.addEventListener('click', this.clickHandler!);
+        this.el.addEventListener('keydown', this.keyHandler!);
+    }
+
+
+    // Cleanup function
+    destroy() {
+        if (this.el) {
+            this.el.removeEventListener('click', this.clickHandler!);
+            this.el.removeEventListener('keydown', this.keyHandler!);
+        }
+
+        this.clickHandler = null;
+        this.keyHandler = null;
+        this.menu = null;
+        this.el = null;
     }
 
 
@@ -43,7 +63,7 @@ export class MenuButtonBehaviour {
         // DOWN ARROW
         if (e.keyCode == 40) {
             if (!MenuManager.open) {
-                MenuManager.openMenu(this.el, this.menu, true);
+                MenuManager.openMenu(this.el!, this.menu!, true);
             } else {
                 MenuManager.focusMenu();
             }
