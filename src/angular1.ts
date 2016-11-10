@@ -1,7 +1,7 @@
 /*! Copyright 2016 Ayogo Health Inc. */
 
 import * as angular from 'angular';
-import MenuButtonBehaviour from './index';
+import MenuButton from './index';
 
 const modName = 'ayMenuButton';
 
@@ -13,7 +13,11 @@ angular.module(modName)
             let el = $element[0] as HTMLButtonElement;
 
             if (el.getAttribute('type') === 'menu' || el.getAttribute('data-type') === 'menu') {
-                new MenuButtonBehaviour(el);
+                let behaviour = MenuButton(el);
+
+                $element.on('$destroy', () => {
+                    behaviour.destroy();
+                });
             }
         }
     };

@@ -82,4 +82,19 @@ if (insertPoint = document.querySelector('head')) {
     document.appendChild(mnuStyle);
 }
 
-export default MenuButtonBehaviour;
+
+let gcCache : WeakMap<HTMLButtonElement, MenuButtonBehaviour> | null = null;
+if ('WeakMap' in window) {
+    gcCache = new WeakMap();
+}
+
+
+export default function MenuButton(el : HTMLButtonElement) {
+    let behaviour = new MenuButtonBehaviour(el);
+
+    if (gcCache) {
+        gcCache.set(el, behaviour);
+    }
+
+    return behaviour;
+}
