@@ -5,7 +5,7 @@ import MenuButton from './index';
 
 const modName = 'ayMenuButton';
 
-angular.module(modName)
+angular.module(modName, [])
 .directive('button', function() {
     return {
         restrict: 'E',
