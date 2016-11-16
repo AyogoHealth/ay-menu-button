@@ -4,6 +4,7 @@ export declare class MenuManager {
     private static curButton;
     private static isOpen;
     private static focusCount;
+    private static transitionEndHandler;
     static readonly open: boolean;
     static openMenu(btn: HTMLButtonElement, mnu: HTMLMenuElement, focus?: boolean): void;
     static closeMenu(): void;
