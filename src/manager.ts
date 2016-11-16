@@ -1,10 +1,11 @@
 /*! Copyright 2016 Ayogo Health Inc. */
 
 export class MenuManager {
-    private static curMenu : HTMLMenuElement | null         = null;
-    private static curButton : HTMLButtonElement | null     = null;
-    private static isOpen : boolean                         = false;
-    private static focusCount : number | null               = null;
+    private static curMenu : HTMLMenuElement | null             = null;
+    private static curButton : HTMLButtonElement | null         = null;
+    private static isOpen : boolean                             = false;
+    private static focusCount : number | null                   = null;
+    private static transitionEndHandler : (() => void) | null   = null;
 
 
     static get open() {
@@ -12,6 +13,10 @@ export class MenuManager {
     }
 
     static openMenu(btn : HTMLButtonElement, mnu : HTMLMenuElement, focus : boolean = false) {
+        if (this.transitionEndHandler !== null) {
+            this.transitionEndHandler!();
+        }
+
         this.curButton = btn;
         this.curMenu = mnu;
         this.isOpen = true;
@@ -50,10 +55,11 @@ export class MenuManager {
         this.curMenu.removeEventListener('click', this.menuClickListener);
 
         let oldMenu = this.curMenu;
-        let handler = () => {
+        this.transitionEndHandler = () => {
             oldMenu.removeAttribute('style');
-            oldMenu.removeEventListener('transitionend', handler);
-            oldMenu.removeEventListener('webkittransitionend', handler);
+            oldMenu.removeEventListener('transitionend', this.transitionEndHandler!);
+            oldMenu.removeEventListener('webkittransitionend', this.transitionEndHandler!);
+            this.transitionEndHandler = null;
         };
 
         if ('transitionDuration' in oldMenu.style) {
@@ -68,8 +74,8 @@ export class MenuManager {
             oldMenu.style.webkitTransform = 'scaleY(0)';
         }
 
-        oldMenu.addEventListener('transitionend', handler);
-        oldMenu.addEventListener('webkittransitionend', handler);
+        oldMenu.addEventListener('transitionend', this.transitionEndHandler!);
+        oldMenu.addEventListener('webkittransitionend', this.transitionEndHandler!);
 
         this.isOpen = false;
         this.curButton = null;
