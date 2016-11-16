@@ -30,12 +30,14 @@
     "@types/angular": "^1.5.19",
     "angular": "^1.5.8",
     "rollup": "^0.36.3",
+    "rollup-plugin-cleanup": "^0.1.4",
+    "rollup-plugin-sourcemaps": "^0.4.1",
     "typescript": "^2.1.1"
   },
   "scripts": {
     "build:es6": "tsc -p tsconfig.es6.json",
-    "build:es5:base": "tsc -p tsconfig.es5.json && rollup dist-es5/index.js -f umd -n MenuButton -m inline -o dist/index.js",
-    "build:es5:ng1": "tsc -p tsconfig.es5.json && rollup dist-es5/angular1.js -f umd -n ayMenuButton -g angular:angular -m inline -o dist/angular1.js",
+    "build:es5:base": "tsc -p tsconfig.es5.json && rollup dist-es5/index.js -n MenuButton -c rollup.config.js -o dist/index.js",
+    "build:es5:ng1": "tsc -p tsconfig.es5.json && rollup dist-es5/angular1.js -n ayMenuButton -c rollup.config.js -o dist/angular1.js",
     "build:es5": "npm run build:es5:base && npm run build:es5:ng1",
     "build": "npm run build:es6 && npm run build:es5"
   }
