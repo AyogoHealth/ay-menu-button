@@ -8,6 +8,7 @@ export class MenuButtonBehaviour {
 
     private clickHandler : null | (() => void);
     private keyHandler : null | ((e : KeyboardEvent) => void);
+    private resizeHandler : null | (() => void);
 
     constructor(btn : HTMLButtonElement) {
         this.el = btn;
@@ -35,8 +36,13 @@ export class MenuButtonBehaviour {
             this.buttonKeypressListener(e);
         };
 
+        this.resizeHandler = () => {
+            MenuManager.closeMenu();
+        };
+
         this.el.addEventListener('click', this.clickHandler!);
         this.el.addEventListener('keydown', this.keyHandler!);
+        window.addEventListener('resize', this.resizeHandler!);
     }
 
 
@@ -45,10 +51,12 @@ export class MenuButtonBehaviour {
         if (this.el) {
             this.el.removeEventListener('click', this.clickHandler!);
             this.el.removeEventListener('keydown', this.keyHandler!);
+            window.removeEventListener('resize', this.resizeHandler!);
         }
 
         this.clickHandler = null;
         this.keyHandler = null;
+        this.resizeHandler = null;
         this.menu = null;
         this.el = null;
     }
