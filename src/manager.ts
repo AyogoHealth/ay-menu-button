@@ -27,7 +27,7 @@ export class MenuManager {
 
         // Before we open the menu, we need to move it in the DOM so that is
         // is directly after the button element for tab ordering
-        this.curButton.parentNode.insertBefore(this.curMenu, this.curButton.nextSibling);
+        this.curButton.parentNode!.insertBefore(this.curMenu, this.curButton.nextSibling);
 
         this.addMenuStyle();
 

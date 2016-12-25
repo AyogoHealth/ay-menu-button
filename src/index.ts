@@ -71,10 +71,10 @@ if (!('transform' in document.createElement('div').style)) {
 
 let insertPoint : HTMLElement | null;
 if (insertPoint = document.querySelector('link')) {
-    insertPoint.parentNode.insertBefore(mnuStyle, insertPoint);
+    insertPoint.parentNode!.insertBefore(mnuStyle, insertPoint);
 } else
 if (insertPoint = document.querySelector('style')) {
-    insertPoint.parentNode.insertBefore(mnuStyle, insertPoint);
+    insertPoint.parentNode!.insertBefore(mnuStyle, insertPoint);
 } else
 if (insertPoint = document.querySelector('head')) {
     insertPoint.appendChild(mnuStyle);
