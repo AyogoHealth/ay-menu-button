@@ -6,7 +6,7 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 export default {
     format: 'umd',
     banner: '/*! Copyright 2016 Ayogo Health Inc. */',
-    sourceMap: 'inline',
+    sourceMap: true,
     globals: {
         'angular': 'angular'
     },
