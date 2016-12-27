@@ -27,7 +27,7 @@ export class MenuManager {
 
         // Before we open the menu, we need to move it in the DOM so that is
         // is directly after the button element for tab ordering
-        this.curButton.parentNode.insertBefore(this.curMenu, this.curButton.nextSibling);
+        this.curButton.parentNode!.insertBefore(this.curMenu, this.curButton.nextSibling);
 
         this.addMenuStyle();
 
@@ -195,6 +195,7 @@ export class MenuManager {
             return;
         }
 
+        MenuManager.curButton.focus();
         MenuManager.closeMenu();
     }
 
@@ -214,6 +215,7 @@ export class MenuManager {
             return;
         }
 
+        MenuManager.curButton.focus();
         MenuManager.closeMenu();
     }
 
@@ -254,17 +256,27 @@ export class MenuManager {
 
         // Escape
         if (e.keyCode === 27) {
+            if (MenuManager.curButton) {
+                MenuManager.curButton.focus();
+            }
+
             MenuManager.closeMenu();
         }
 
         // Up Arrow
         if (e.keyCode === 38) {
+            e.preventDefault();
+            e.stopPropagation();
+
             MenuManager.focusCount--;
             MenuManager.focusMenu();
         }
 
         // Down Arrow
         if (e.keyCode === 40) {
+            e.preventDefault();
+            e.stopPropagation();
+
             MenuManager.focusCount++;
             MenuManager.focusMenu();
         }
@@ -272,6 +284,9 @@ export class MenuManager {
 
         // Enter and Spacebar
         if (e.keyCode === 32 || e.keyCode === 13) {
+            e.preventDefault();
+            e.stopPropagation();
+
             MenuManager.clickMenuItem();
         }
     }
