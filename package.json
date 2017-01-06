@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/angular": "^1.5.19",
     "angular": "^1.5.8",
-    "rollup": "^0.38.0",
+    "rollup": "^0.40.2",
     "rollup-plugin-cleanup": "^0.1.4",
     "rollup-plugin-sourcemaps": "^0.4.1",
     "typescript": "^2.1.1"
