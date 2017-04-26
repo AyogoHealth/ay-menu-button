@@ -123,7 +123,7 @@ export class MenuManager {
         }
 
         let length = this.curMenu.children.length;
-        let mi = this.curMenu.children[this.focusCount % length] as HTMLElement;
+        let mi = this.curMenu.children[(this.focusCount || 0) % length] as HTMLElement;
 
         if (!mi.hasAttribute('disabled')) {
             mi.click();
@@ -268,7 +268,9 @@ export class MenuManager {
             e.preventDefault();
             e.stopPropagation();
 
-            MenuManager.focusCount--;
+            if (MenuManager.focusCount !== null) {
+                MenuManager.focusCount--;
+            }
             MenuManager.focusMenu();
         }
 
@@ -277,7 +279,9 @@ export class MenuManager {
             e.preventDefault();
             e.stopPropagation();
 
-            MenuManager.focusCount++;
+            if (MenuManager.focusCount !== null) {
+                MenuManager.focusCount++;
+            }
             MenuManager.focusMenu();
         }
 
