@@ -15,7 +15,7 @@ export class MenuManager {
 
     static openMenu(btn : HTMLButtonElement, mnu : HTMLMenuElement, focus : boolean = false) {
         if (this.transitionEndHandler !== null) {
-            this.transitionEndHandler!();
+            this.transitionEndHandler();
         }
 
         this.curButton = btn;
