@@ -5,6 +5,7 @@ export declare class MenuManager {
     private static isOpen;
     private static focusCount;
     private static transitionEndHandler;
+    private static scrollJack;
     static readonly open: boolean;
     static openMenu(btn: HTMLButtonElement, mnu: HTMLMenuElement, focus?: boolean): void;
     static closeMenu(): void;
@@ -16,4 +17,6 @@ export declare class MenuManager {
     private static menuClickListener(e);
     private static handleBlur(e);
     private static menuKeypressListener(e);
+    private static getScrollOffset();
+    private static blockScrolling(offset);
 }

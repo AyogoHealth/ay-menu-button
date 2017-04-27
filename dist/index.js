@@ -1,8 +1,8 @@
 /*! Copyright 2017 Ayogo Health Inc. */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.MenuButton = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.MenuButton = factory());
 }(this, (function () { 'use strict';
 
 var MenuManager = (function () {
@@ -27,7 +27,9 @@ var MenuManager = (function () {
         this.curButton.ownerDocument.documentElement.addEventListener('click', this.clickListener);
         this.curButton.addEventListener('blur', this.handleBlur);
         this.curButton.parentNode.insertBefore(this.curMenu, this.curButton.nextSibling);
+        var offset = this.getScrollOffset();
         this.addMenuStyle();
+        this.scrollJack = this.blockScrolling(offset);
         if (focus) {
             this.focusMenu();
         }
@@ -46,6 +48,9 @@ var MenuManager = (function () {
         this.curMenu.removeEventListener('keydown', this.menuKeypressListener);
         this.curMenu.removeEventListener('focusout', this.handleBlur);
         this.curMenu.removeEventListener('click', this.menuClickListener);
+        if (this.scrollJack) {
+            this.scrollJack();
+        }
         var oldMenu = this.curMenu;
         this.transitionEndHandler = function () {
             oldMenu.removeAttribute('style');
@@ -100,7 +105,7 @@ var MenuManager = (function () {
             return;
         }
         var length = this.curMenu.children.length;
-        var mi = this.curMenu.children[this.focusCount % length];
+        var mi = this.curMenu.children[(this.focusCount || 0) % length];
         if (!mi.hasAttribute('disabled')) {
             mi.click();
         }
@@ -205,13 +210,17 @@ var MenuManager = (function () {
         if (e.keyCode === 38) {
             e.preventDefault();
             e.stopPropagation();
-            MenuManager.focusCount--;
+            if (MenuManager.focusCount !== null) {
+                MenuManager.focusCount--;
+            }
             MenuManager.focusMenu();
         }
         if (e.keyCode === 40) {
             e.preventDefault();
             e.stopPropagation();
-            MenuManager.focusCount++;
+            if (MenuManager.focusCount !== null) {
+                MenuManager.focusCount++;
+            }
             MenuManager.focusMenu();
         }
         if (e.keyCode === 32 || e.keyCode === 13) {
@@ -220,6 +229,45 @@ var MenuManager = (function () {
             MenuManager.clickMenuItem();
         }
     };
+    MenuManager.getScrollOffset = function () {
+        var doc = this.curButton.ownerDocument;
+        if (doc.body.style.top) {
+            return Math.abs(parseInt(doc.body.style.top, 10));
+        }
+        if (doc.scrollingElement) {
+            return doc.scrollingElement.scrollTop;
+        }
+        else {
+            return doc.documentElement.scrollTop + doc.body.scrollTop;
+        }
+    };
+    MenuManager.blockScrolling = function (offset) {
+        var doc = this.curButton.ownerDocument;
+        var htmlNode = doc.documentElement;
+        var clientWidth = doc.body.clientWidth;
+        if (doc.body.scrollHeight > htmlNode.clientHeight) {
+            doc.body.style.position = 'fixed';
+            doc.body.style.width = '100%';
+            doc.body.style.top = -offset + 'px';
+            htmlNode.style.overflowY = 'scroll';
+        }
+        if (doc.body.clientWidth < clientWidth) {
+            doc.body.style.overflow = 'hidden';
+        }
+        return function () {
+            doc.body.style.position = null;
+            doc.body.style.width = null;
+            doc.body.style.top = null;
+            doc.body.style.overflow = null;
+            htmlNode.style.overflowY = null;
+            if (doc.scrollingElement) {
+                doc.scrollingElement.scrollTop = offset;
+            }
+            else {
+                scrollTo(0, offset);
+            }
+        };
+    };
     return MenuManager;
 }());
 MenuManager.curMenu = null;
@@ -227,6 +275,7 @@ MenuManager.curButton = null;
 MenuManager.isOpen = false;
 MenuManager.focusCount = null;
 MenuManager.transitionEndHandler = null;
+MenuManager.scrollJack = null;
 
 var MenuButtonBehaviour = (function () {
     function MenuButtonBehaviour(btn) {
