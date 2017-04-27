@@ -33,7 +33,7 @@
     "rollup": "^0.41.4",
     "rollup-plugin-cleanup": "^1.0.0",
     "rollup-plugin-sourcemaps": "^0.4.1",
-    "typescript": "^2.1.1"
+    "typescript": "^2.3.1"
   },
   "scripts": {
     "build:es6": "tsc -p tsconfig.es6.json",
