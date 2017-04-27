@@ -6,6 +6,7 @@ export class MenuManager {
     private static isOpen : boolean                             = false;
     private static focusCount : number | null                   = null;
     private static transitionEndHandler : (() => void) | null   = null;
+    private static scrollJack : (() => void) | null             = null;
 
 
     static get open() {
@@ -14,7 +15,7 @@ export class MenuManager {
 
     static openMenu(btn : HTMLButtonElement, mnu : HTMLMenuElement, focus : boolean = false) {
         if (this.transitionEndHandler !== null) {
-            this.transitionEndHandler!();
+            this.transitionEndHandler();
         }
 
         this.curButton = btn;
@@ -29,7 +30,11 @@ export class MenuManager {
         // is directly after the button element for tab ordering
         this.curButton.parentNode!.insertBefore(this.curMenu, this.curButton.nextSibling);
 
+        let offset = this.getScrollOffset();
+
         this.addMenuStyle();
+
+        this.scrollJack = this.blockScrolling(offset);
 
         if (focus) {
             this.focusMenu();
@@ -53,6 +58,10 @@ export class MenuManager {
         this.curMenu.removeEventListener('keydown', this.menuKeypressListener);
         this.curMenu.removeEventListener('focusout', this.handleBlur);
         this.curMenu.removeEventListener('click', this.menuClickListener);
+
+        if (this.scrollJack) {
+            this.scrollJack();
+        }
 
         let oldMenu = this.curMenu;
         this.transitionEndHandler = () => {
@@ -123,7 +132,7 @@ export class MenuManager {
         }
 
         let length = this.curMenu.children.length;
-        let mi = this.curMenu.children[this.focusCount % length] as HTMLElement;
+        let mi = this.curMenu.children[(this.focusCount || 0) % length] as HTMLElement;
 
         if (!mi.hasAttribute('disabled')) {
             mi.click();
@@ -268,7 +277,9 @@ export class MenuManager {
             e.preventDefault();
             e.stopPropagation();
 
-            MenuManager.focusCount--;
+            if (MenuManager.focusCount !== null) {
+                MenuManager.focusCount--;
+            }
             MenuManager.focusMenu();
         }
 
@@ -277,7 +288,9 @@ export class MenuManager {
             e.preventDefault();
             e.stopPropagation();
 
-            MenuManager.focusCount++;
+            if (MenuManager.focusCount !== null) {
+                MenuManager.focusCount++;
+            }
             MenuManager.focusMenu();
         }
 
@@ -289,5 +302,53 @@ export class MenuManager {
 
             MenuManager.clickMenuItem();
         }
+    }
+
+
+    private static getScrollOffset() {
+        let doc = this.curButton!.ownerDocument;
+
+        if (doc.body.style.top) {
+            return Math.abs(parseInt(doc.body.style.top, 10));
+        }
+
+        if (doc.scrollingElement) {
+            return doc.scrollingElement.scrollTop;
+        } else {
+            return doc.documentElement.scrollTop + doc.body.scrollTop;
+        }
+    }
+
+
+    private static blockScrolling(offset : number) {
+        let doc = this.curButton!.ownerDocument;
+        let htmlNode = doc.documentElement;
+        let clientWidth = doc.body.clientWidth;
+
+        if (doc.body.scrollHeight > htmlNode.clientHeight) {
+            doc.body.style.position = 'fixed';
+            doc.body.style.width = '100%';
+            doc.body.style.top = -offset + 'px';
+
+            htmlNode.style.overflowY = 'scroll';
+        }
+
+        if (doc.body.clientWidth < clientWidth) {
+            doc.body.style.overflow = 'hidden';
+        }
+
+        return function() {
+            doc.body.style.position = null;
+            doc.body.style.width = null;
+            doc.body.style.top = null;
+            doc.body.style.overflow = null;
+            htmlNode.style.overflowY = null;
+
+            if (doc.scrollingElement) {
+                doc.scrollingElement.scrollTop = offset;
+            } else {
+                scrollTo(0, offset);
+            }
+        };
     }
 }
