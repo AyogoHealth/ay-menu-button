@@ -7,9 +7,9 @@ export declare class MenuManager {
     private static transitionEndHandler;
     private static scrollJack;
     static readonly open: boolean;
-    static openMenu(btn: HTMLButtonElement, mnu: HTMLMenuElement, focus?: boolean): void;
+    static openMenu(btn: HTMLButtonElement, focus?: boolean): void;
     static closeMenu(): void;
-    static toggleMenu(btn: HTMLButtonElement, mnu: HTMLMenuElement): void;
+    static toggleMenu(btn: HTMLButtonElement): void;
     static focusMenu(): void;
     private static clickMenuItem();
     private static addMenuStyle();

@@ -1,7 +1,6 @@
 /*! Copyright 2016 Ayogo Health Inc. */
 export declare class MenuButtonBehaviour {
     private el;
-    private menu;
     private clickHandler;
     private keyHandler;
     private resizeHandler;

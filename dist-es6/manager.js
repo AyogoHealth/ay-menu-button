@@ -3,9 +3,17 @@ export class MenuManager {
     static get open() {
         return this.isOpen;
     }
-    static openMenu(btn, mnu, focus = false) {
+    static openMenu(btn, focus = false) {
         if (this.transitionEndHandler !== null) {
             this.transitionEndHandler();
+        }
+        let mnuID = btn.getAttribute('menu');
+        if (!mnuID) {
+            return;
+        }
+        let mnu = btn.ownerDocument.getElementById(mnuID);
+        if (!mnu) {
+            return;
         }
         this.curButton = btn;
         this.curMenu = mnu;
@@ -63,13 +71,13 @@ export class MenuManager {
         this.curMenu = null;
         this.focusCount = null;
     }
-    static toggleMenu(btn, mnu) {
+    static toggleMenu(btn) {
         let openMnu = this.curMenu;
         if (this.isOpen && btn === this.curButton) {
             this.closeMenu();
         }
-        if (openMnu !== mnu) {
-            this.openMenu(btn, mnu);
+        if (!openMnu || openMnu.getAttribute('id') !== btn.getAttribute('menu')) {
+            this.openMenu(btn);
         }
     }
     static focusMenu() {

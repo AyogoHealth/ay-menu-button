@@ -15,10 +15,18 @@ var MenuManager = (function () {
         enumerable: true,
         configurable: true
     });
-    MenuManager.openMenu = function (btn, mnu, focus) {
+    MenuManager.openMenu = function (btn, focus) {
         if (focus === void 0) { focus = false; }
         if (this.transitionEndHandler !== null) {
             this.transitionEndHandler();
+        }
+        var mnuID = btn.getAttribute('menu');
+        if (!mnuID) {
+            return;
+        }
+        var mnu = btn.ownerDocument.getElementById(mnuID);
+        if (!mnu) {
+            return;
         }
         this.curButton = btn;
         this.curMenu = mnu;
@@ -77,13 +85,13 @@ var MenuManager = (function () {
         this.curMenu = null;
         this.focusCount = null;
     };
-    MenuManager.toggleMenu = function (btn, mnu) {
+    MenuManager.toggleMenu = function (btn) {
         var openMnu = this.curMenu;
         if (this.isOpen && btn === this.curButton) {
             this.closeMenu();
         }
-        if (openMnu !== mnu) {
-            this.openMenu(btn, mnu);
+        if (!openMnu || openMnu.getAttribute('id') !== btn.getAttribute('menu')) {
+            this.openMenu(btn);
         }
     };
     MenuManager.focusMenu = function () {
@@ -281,19 +289,10 @@ var MenuButtonBehaviour = (function () {
     function MenuButtonBehaviour(btn) {
         var _this = this;
         this.el = btn;
-        var menuID = this.el.getAttribute('menu');
-        if (!menuID) {
-            return;
-        }
-        var menu = btn.ownerDocument.getElementById(menuID);
-        if (!menu) {
-            return;
-        }
-        this.menu = menu;
         this.el.setAttribute('aria-haspopup', 'true');
         this.el.setAttribute('aria-expanded', 'false');
         this.clickHandler = function () {
-            MenuManager.toggleMenu(_this.el, _this.menu);
+            MenuManager.toggleMenu(_this.el);
         };
         this.keyHandler = function (e) {
             _this.buttonKeypressListener(e);
@@ -314,7 +313,6 @@ var MenuButtonBehaviour = (function () {
         this.clickHandler = null;
         this.keyHandler = null;
         this.resizeHandler = null;
-        this.menu = null;
         this.el = null;
     };
     MenuButtonBehaviour.prototype.buttonKeypressListener = function (e) {
@@ -323,7 +321,7 @@ var MenuButtonBehaviour = (function () {
         }
         if (e.keyCode == 40) {
             if (!MenuManager.open) {
-                MenuManager.openMenu(this.el, this.menu, true);
+                MenuManager.openMenu(this.el, true);
             }
             else {
                 MenuManager.focusMenu();

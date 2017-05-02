@@ -3,19 +3,10 @@ import { MenuManager } from './manager';
 export class MenuButtonBehaviour {
     constructor(btn) {
         this.el = btn;
-        let menuID = this.el.getAttribute('menu');
-        if (!menuID) {
-            return;
-        }
-        let menu = btn.ownerDocument.getElementById(menuID);
-        if (!menu) {
-            return;
-        }
-        this.menu = menu;
         this.el.setAttribute('aria-haspopup', 'true');
         this.el.setAttribute('aria-expanded', 'false');
         this.clickHandler = () => {
-            MenuManager.toggleMenu(this.el, this.menu);
+            MenuManager.toggleMenu(this.el);
         };
         this.keyHandler = (e) => {
             this.buttonKeypressListener(e);
@@ -36,7 +27,6 @@ export class MenuButtonBehaviour {
         this.clickHandler = null;
         this.keyHandler = null;
         this.resizeHandler = null;
-        this.menu = null;
         this.el = null;
     }
     buttonKeypressListener(e) {
@@ -45,7 +35,7 @@ export class MenuButtonBehaviour {
         }
         if (e.keyCode == 40) {
             if (!MenuManager.open) {
-                MenuManager.openMenu(this.el, this.menu, true);
+                MenuManager.openMenu(this.el, true);
             }
             else {
                 MenuManager.focusMenu();
