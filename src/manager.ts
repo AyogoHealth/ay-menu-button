@@ -13,13 +13,23 @@ export class MenuManager {
         return this.isOpen;
     }
 
-    static openMenu(btn : HTMLButtonElement, mnu : HTMLMenuElement, focus : boolean = false) {
+    static openMenu(btn : HTMLButtonElement, focus : boolean = false) {
         if (this.transitionEndHandler !== null) {
             this.transitionEndHandler();
         }
 
+        let mnuID = btn.getAttribute('menu');
+        if (!mnuID) {
+            return;
+        }
+
+        let mnu = btn.ownerDocument.getElementById(mnuID);
+        if (!mnu) {
+            return;
+        }
+
         this.curButton = btn;
-        this.curMenu = mnu;
+        this.curMenu = mnu as HTMLMenuElement;
         this.isOpen = true;
 
         this.curButton.setAttribute('aria-expanded', 'true');
@@ -93,15 +103,15 @@ export class MenuManager {
     }
 
 
-    static toggleMenu(btn : HTMLButtonElement, mnu : HTMLMenuElement) {
+    static toggleMenu(btn : HTMLButtonElement) {
         let openMnu = this.curMenu;
 
         if (this.isOpen && btn === this.curButton) {
             this.closeMenu();
         }
 
-        if (openMnu !== mnu) {
-            this.openMenu(btn, mnu);
+        if (!openMnu || openMnu.getAttribute('id') !== btn.getAttribute('menu')) {
+            this.openMenu(btn);
         }
     }
 
