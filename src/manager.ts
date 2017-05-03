@@ -64,6 +64,7 @@ export class MenuManager {
         this.curButton.ownerDocument.documentElement.removeEventListener('click', this.clickListener);
         this.curButton.removeEventListener('blur', this.handleBlur);
         this.curButton.setAttribute('aria-expanded', 'false');
+        this.curButton.setAttribute('data-dir', 'down');
 
         this.curMenu.removeEventListener('keydown', this.menuKeypressListener);
         this.curMenu.removeEventListener('focusout', this.handleBlur);
@@ -181,9 +182,13 @@ export class MenuManager {
             let wndHeight = window.innerHeight;
 
             if (btnSize.bottom + menuSize.height > wndHeight) {
-                menu.style.bottom = btnSize.top + 'px';
+                menu.style.top = (btnSize.top - menuSize.height) + 'px';
+                btn.setAttribute('data-dir', 'up');
+                menu.setAttribute('data-dir', 'up');
             } else {
                 menu.style.top = btnSize.bottom + 'px';
+                btn.setAttribute('data-dir', 'down');
+                menu.setAttribute('data-dir', 'down');
             }
 
             if (menuSize.width > btnSize.right) {
@@ -193,9 +198,17 @@ export class MenuManager {
             }
 
             if ('transform' in menu.style) {
-                menu.style.transform = 'scaleY(1)';
+                menu.style.transform = 'scaleY(0)';
+
+                requestAnimationFrame(() => {
+                    menu.style.transform = 'scaleY(1)';
+                });
             } else {
-                menu.style.webkitTransform = 'scaleY(1)';
+                menu.style.webkitTransform = 'scaleY(0)';
+
+                requestAnimationFrame(() => {
+                    menu.style.webkitTransform = 'scaleY(1)';
+                });
             }
         });
     }
@@ -337,7 +350,8 @@ export class MenuManager {
 
         if (doc.body.scrollHeight > htmlNode.clientHeight) {
             doc.body.style.position = 'fixed';
-            doc.body.style.width = '100%';
+            doc.body.style.left = '0';
+            doc.body.style.right = '0';
             doc.body.style.top = -offset + 'px';
 
             htmlNode.style.overflowY = 'scroll';
@@ -348,11 +362,12 @@ export class MenuManager {
         }
 
         return function() {
-            doc.body.style.position = null;
-            doc.body.style.width = null;
-            doc.body.style.top = null;
-            doc.body.style.overflow = null;
-            htmlNode.style.overflowY = null;
+            doc.body.style.removeProperty('position');
+            doc.body.style.removeProperty('left');
+            doc.body.style.removeProperty('right');
+            doc.body.style.removeProperty('top');
+            doc.body.style.removeProperty('overflow');
+            htmlNode.style.removeProperty('overflow-y');
 
             if (doc.scrollingElement) {
                 doc.scrollingElement.scrollTop = offset;
