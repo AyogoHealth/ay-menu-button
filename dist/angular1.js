@@ -53,6 +53,7 @@ var MenuManager = (function () {
         this.curButton.ownerDocument.documentElement.removeEventListener('click', this.clickListener);
         this.curButton.removeEventListener('blur', this.handleBlur);
         this.curButton.setAttribute('aria-expanded', 'false');
+        this.curButton.setAttribute('data-dir', 'down');
         this.curMenu.removeEventListener('keydown', this.menuKeypressListener);
         this.curMenu.removeEventListener('focusout', this.handleBlur);
         this.curMenu.removeEventListener('click', this.menuClickListener);
@@ -139,10 +140,14 @@ var MenuManager = (function () {
             var menuSize = menu.getBoundingClientRect();
             var wndHeight = window.innerHeight;
             if (btnSize.bottom + menuSize.height > wndHeight) {
-                menu.style.bottom = btnSize.top + 'px';
+                menu.style.top = (btnSize.top - menuSize.height) + 'px';
+                btn.setAttribute('data-dir', 'up');
+                menu.setAttribute('data-dir', 'up');
             }
             else {
                 menu.style.top = btnSize.bottom + 'px';
+                btn.setAttribute('data-dir', 'down');
+                menu.setAttribute('data-dir', 'down');
             }
             if (menuSize.width > btnSize.right) {
                 menu.style.left = btnSize.left + 'px';
@@ -151,10 +156,16 @@ var MenuManager = (function () {
                 menu.style.left = (btnSize.right - menuSize.width) + 'px';
             }
             if ('transform' in menu.style) {
-                menu.style.transform = 'scaleY(1)';
+                menu.style.transform = 'scaleY(0)';
+                requestAnimationFrame(function () {
+                    menu.style.transform = 'scaleY(1)';
+                });
             }
             else {
-                menu.style.webkitTransform = 'scaleY(1)';
+                menu.style.webkitTransform = 'scaleY(0)';
+                requestAnimationFrame(function () {
+                    menu.style.webkitTransform = 'scaleY(1)';
+                });
             }
         });
     };
@@ -255,7 +266,8 @@ var MenuManager = (function () {
         var clientWidth = doc.body.clientWidth;
         if (doc.body.scrollHeight > htmlNode.clientHeight) {
             doc.body.style.position = 'fixed';
-            doc.body.style.width = '100%';
+            doc.body.style.left = '0';
+            doc.body.style.right = '0';
             doc.body.style.top = -offset + 'px';
             htmlNode.style.overflowY = 'scroll';
         }
@@ -263,11 +275,12 @@ var MenuManager = (function () {
             doc.body.style.overflow = 'hidden';
         }
         return function () {
-            doc.body.style.position = null;
-            doc.body.style.width = null;
-            doc.body.style.top = null;
-            doc.body.style.overflow = null;
-            htmlNode.style.overflowY = null;
+            doc.body.style.removeProperty('position');
+            doc.body.style.removeProperty('left');
+            doc.body.style.removeProperty('right');
+            doc.body.style.removeProperty('top');
+            doc.body.style.removeProperty('overflow');
+            htmlNode.style.removeProperty('overflow-y');
             if (doc.scrollingElement) {
                 doc.scrollingElement.scrollTop = offset;
             }
@@ -331,8 +344,8 @@ var MenuButtonBehaviour = (function () {
     return MenuButtonBehaviour;
 }());
 
-var MENU_STYLES = "\nmenu[type=\"context\"],\nmenu[data-owner=\"button\"] {\n    display: none;\n    padding: 0;\n    margin: 0;\n    border: 1px solid;\n    will-change: transform;\n    transform: scaleY(0);\n    transform-origin: top center;\n    transition: transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n}\n\nmenuitem {\n    display: list-item;\n    list-style-type: none;\n    background: Menu;\n    font: menu;\n    padding: 0.25em 0.5em;\n    cursor: default;\n}\n\nmenuitem::after {\n    content: attr(label);\n}\n\nmenuitem[disabled] {\n    color: GrayText;\n}\n\nmenuitem:not([disabled]):hover,\nmenuitem:not([disabled]):focus {\n    background: Highlight;\n    color: HighlightText;\n}\n\nbutton[type=\"menu\"]::after,\nbutton[data-type=\"menu\"]:after { content: ' \u25BE'; }\n\nbutton[type=\"menu\"]:empty::after,\nbutton[data-type=\"menu\"]:empty:after { content: '\u25BE'; } /* No space character */\n";
-var PREFIX_STYLES = "\nmenu[type=\"context\"],\nmenu[data-owner=\"button\"] {\n    -webkit-transform: scaleY(0);\n    -webkit-transform-origin: top center;\n    -webkit-transition: -webkit-transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n    transition: -webkit-transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n}\n";
+var MENU_STYLES = "\nmenu[type=\"context\"],\nmenu[data-owner=\"button\"] {\n    display: none;\n    padding: 0;\n    margin: 0;\n    border: 1px solid;\n    will-change: transform;\n    transform-origin: top center;\n    transition: transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n}\n\nmenu[type=\"context\"][data-dir=\"up\"],\nmenu[data-owner=\"button\"][data-dir=\"up\"] {\n    transform-origin: bottom center;\n}\n\nmenuitem {\n    display: list-item;\n    list-style-type: none;\n    background: Menu;\n    font: menu;\n    padding: 0.25em 0.5em;\n    cursor: default;\n}\n\nmenuitem::after {\n    content: attr(label);\n}\n\nmenuitem[disabled] {\n    color: GrayText;\n}\n\nmenuitem:not([disabled]):hover,\nmenuitem:not([disabled]):focus {\n    background: Highlight;\n    color: HighlightText;\n}\n\nbutton[type=\"menu\"]::after,\nbutton[data-type=\"menu\"]:after { content: ' \u25BE'; }\n\nbutton[type=\"menu\"]:empty::after,\nbutton[data-type=\"menu\"]:empty:after { content: '\u25BE'; } /* No space character */\n\nbutton[type=\"menu\"][data-dir=\"up\"]::after,\nbutton[data-type=\"menu\"][data-dir=\"up\"]:after { content: ' \u25B4'; }\n\nbutton[type=\"menu\"][data-dir=\"up\"]:empty::after,\nbutton[data-type=\"menu\"][data-dir=\"up\"]:empty:after { content: '\u25B4'; } /* No space character */\n";
+var PREFIX_STYLES = "\nmenu[type=\"context\"],\nmenu[data-owner=\"button\"] {\n    -webkit-transform-origin: top center;\n    -webkit-transition: -webkit-transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n    transition: -webkit-transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n}\n\nmenu[type=\"context\"][data-dir=\"up\"],\nmenu[data-owner=\"button\"][data-dir=\"up\"] {\n    -webkit-transform-origin: bottom center;\n}\n";
 var mnuStyle = document.createElement('style');
 mnuStyle.appendChild(document.createTextNode(MENU_STYLES));
 if (!('transform' in document.createElement('div').style)) {
