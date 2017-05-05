@@ -88,7 +88,7 @@ var MenuManager = (function () {
     };
     MenuManager.toggleMenu = function (btn) {
         var openMnu = this.curMenu;
-        if (this.isOpen && btn === this.curButton) {
+        if (this.isOpen) {
             this.closeMenu();
         }
         if (!openMnu || openMnu.getAttribute('id') !== btn.getAttribute('menu')) {
