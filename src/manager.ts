@@ -107,7 +107,7 @@ export class MenuManager {
     static toggleMenu(btn : HTMLButtonElement) {
         let openMnu = this.curMenu;
 
-        if (this.isOpen && btn === this.curButton) {
+        if (this.isOpen) {
             this.closeMenu();
         }
 
