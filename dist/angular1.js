@@ -269,6 +269,7 @@ var MenuManager = (function () {
             doc.body.style.left = '0';
             doc.body.style.right = '0';
             doc.body.style.top = -offset + 'px';
+            htmlNode.style.minHeight = '100vh';
             htmlNode.style.overflowY = 'scroll';
         }
         if (doc.body.clientWidth < clientWidth) {
@@ -281,6 +282,7 @@ var MenuManager = (function () {
             doc.body.style.removeProperty('top');
             doc.body.style.removeProperty('overflow');
             htmlNode.style.removeProperty('overflow-y');
+            htmlNode.style.removeProperty('min-height');
             if (doc.scrollingElement) {
                 doc.scrollingElement.scrollTop = offset;
             }
