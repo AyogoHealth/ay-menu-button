@@ -158,6 +158,7 @@ export class MenuManager {
 
         let menu = this.curMenu!;
         let btn = this.curButton!;
+        let btnSize = btn.getBoundingClientRect();
 
         // Add the menu to the DOM for measuring
         menu.style.display = 'block';
@@ -177,7 +178,6 @@ export class MenuManager {
         }
 
         requestAnimationFrame(() => {
-            let btnSize = btn.getBoundingClientRect();
             let menuSize = menu.getBoundingClientRect();
             let wndHeight = window.innerHeight;
 
