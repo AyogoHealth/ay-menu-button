@@ -85,13 +85,13 @@ export class MenuManager {
         if ('transitionDuration' in oldMenu.style) {
             oldMenu.style.transitionDuration = '192ms';
         } else {
-            oldMenu.style.webkitTransitionDuration = '192ms';
+            oldMenu.style!.webkitTransitionDuration = '192ms';
         }
 
         if ('transform' in oldMenu.style) {
             oldMenu.style.transform = 'scaleY(0)';
         } else {
-            oldMenu.style.webkitTransform = 'scaleY(0)';
+            oldMenu.style!.webkitTransform = 'scaleY(0)';
         }
 
         oldMenu.addEventListener('transitionend', this.transitionEndHandler!);
@@ -204,7 +204,7 @@ export class MenuManager {
                     menu.style.transform = 'scaleY(1)';
                 });
             } else {
-                menu.style.webkitTransform = 'scaleY(0)';
+                menu.style!.webkitTransform = 'scaleY(0)';
 
                 requestAnimationFrame(() => {
                     menu.style.webkitTransform = 'scaleY(1)';
