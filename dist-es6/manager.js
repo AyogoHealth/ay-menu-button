@@ -111,6 +111,7 @@ export class MenuManager {
         }
         let menu = this.curMenu;
         let btn = this.curButton;
+        let btnSize = btn.getBoundingClientRect();
         menu.style.display = 'block';
         menu.style.position = 'fixed';
         menu.setAttribute('role', 'menu');
@@ -122,7 +123,6 @@ export class MenuManager {
             menu.children[i].setAttribute('aria-disabled', menu.children[i].hasAttribute('disabled').toString());
         }
         requestAnimationFrame(() => {
-            let btnSize = btn.getBoundingClientRect();
             let menuSize = menu.getBoundingClientRect();
             let wndHeight = window.innerHeight;
             if (btnSize.bottom + menuSize.height > wndHeight) {

@@ -6,5 +6,5 @@ export declare class MenuButtonBehaviour {
     private resizeHandler;
     constructor(btn: HTMLButtonElement);
     destroy(): void;
-    private buttonKeypressListener(e);
+    private buttonKeypressListener;
 }

@@ -11,12 +11,12 @@ export declare class MenuManager {
     static closeMenu(): void;
     static toggleMenu(btn: HTMLButtonElement): void;
     static focusMenu(): void;
-    private static clickMenuItem();
-    private static addMenuStyle();
-    private static clickListener(e);
-    private static menuClickListener(e);
-    private static handleBlur(e);
-    private static menuKeypressListener(e);
-    private static getScrollOffset();
-    private static blockScrolling(offset);
+    private static clickMenuItem;
+    private static addMenuStyle;
+    private static clickListener;
+    private static menuClickListener;
+    private static handleBlur;
+    private static menuKeypressListener;
+    private static getScrollOffset;
+    private static blockScrolling;
 }
