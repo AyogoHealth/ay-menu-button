@@ -75,8 +75,7 @@ Framework Support
 For convenience and ease of integration with apps already using client-side
 frameworks, framework integration files are also available.
 
-Currently we only support Angular 1, but we are hoping to support Angular 2 and
-native WebComponents.
+Currently we only support Angular 1 and Vue, but we are hoping to support native WebComponents.
 
 ### Angular 1
 
@@ -89,6 +88,30 @@ Use the `ay-menu-button/dist/angular1.js` file:
   angular.module('MyApp', [ayMenuButton]);
 </script>
 ```
+
+
+### Vue
+
+Use the `ay-menu-button/dist/vue.js` file:
+
+```javascript
+  import Vue from 'vue';
+  import AyMenuButton from 'ay-menu-button/vue';
+
+  Vue.component('ay-menu-button', AyMenuButton);
+  //...
+```
+
+```html
+  <menu id="myMenu" type="context">
+    <menuitem label="First Item"></menuitem>
+    <menuitem>Second Item</menuitem>
+    <menuitem disabled label="Disabled Item"></menuitem>
+  </menu>
+
+  <ay-menu-button data-type="menu" menu="myMenu">Open Menu</ay-menu-button>
+```
+
 
 
 Notes

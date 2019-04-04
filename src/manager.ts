@@ -23,7 +23,7 @@ export class MenuManager {
             return;
         }
 
-        let mnu = btn.ownerDocument.getElementById(mnuID);
+        let mnu = btn.ownerDocument!.getElementById(mnuID);
         if (!mnu) {
             return;
         }
@@ -33,7 +33,7 @@ export class MenuManager {
         this.isOpen = true;
 
         this.curButton.setAttribute('aria-expanded', 'true');
-        this.curButton.ownerDocument.documentElement.addEventListener('click', this.clickListener);
+        this.curButton.ownerDocument!.documentElement.addEventListener('click', this.clickListener);
         this.curButton.addEventListener('blur', this.handleBlur);
 
         // Before we open the menu, we need to move it in the DOM so that is
@@ -61,7 +61,7 @@ export class MenuManager {
             return;
         }
 
-        this.curButton.ownerDocument.documentElement.removeEventListener('click', this.clickListener);
+        this.curButton.ownerDocument!.documentElement.removeEventListener('click', this.clickListener);
         this.curButton.removeEventListener('blur', this.handleBlur);
         this.curButton.setAttribute('aria-expanded', 'false');
         this.curButton.setAttribute('data-dir', 'down');
@@ -331,48 +331,48 @@ export class MenuManager {
     private static getScrollOffset() {
         let doc = this.curButton!.ownerDocument;
 
-        if (doc.body.style.top) {
-            return Math.abs(parseInt(doc.body.style.top, 10));
+        if (doc!.body.style.top) {
+            return Math.abs(parseInt(doc!.body.style.top, 10));
         }
 
-        if (doc.scrollingElement) {
-            return doc.scrollingElement.scrollTop;
+        if (doc!.scrollingElement) {
+            return doc!.scrollingElement.scrollTop;
         } else {
-            return doc.documentElement.scrollTop + doc.body.scrollTop;
+            return doc!.documentElement.scrollTop + doc!.body.scrollTop;
         }
     }
 
 
     private static blockScrolling(offset : number) {
         let doc = this.curButton!.ownerDocument;
-        let htmlNode = doc.documentElement;
-        let clientWidth = doc.body.clientWidth;
+        let htmlNode = doc!.documentElement;
+        let clientWidth = doc!.body.clientWidth;
 
-        if (doc.body.scrollHeight > htmlNode.clientHeight) {
-            doc.body.style.position = 'fixed';
-            doc.body.style.left = '0';
-            doc.body.style.right = '0';
-            doc.body.style.top = -offset + 'px';
+        if (doc!.body.scrollHeight > htmlNode.clientHeight) {
+            doc!.body.style.position = 'fixed';
+            doc!.body.style.left = '0';
+            doc!.body.style.right = '0';
+            doc!.body.style.top = -offset + 'px';
 
             htmlNode.style.minHeight = '100vh';
             htmlNode.style.overflowY = 'scroll';
         }
 
-        if (doc.body.clientWidth < clientWidth) {
-            doc.body.style.overflow = 'hidden';
+        if (doc!.body.clientWidth < clientWidth) {
+            doc!.body.style.overflow = 'hidden';
         }
 
         return function() {
-            doc.body.style.removeProperty('position');
-            doc.body.style.removeProperty('left');
-            doc.body.style.removeProperty('right');
-            doc.body.style.removeProperty('top');
-            doc.body.style.removeProperty('overflow');
+            doc!.body.style.removeProperty('position');
+            doc!.body.style.removeProperty('left');
+            doc!.body.style.removeProperty('right');
+            doc!.body.style.removeProperty('top');
+            doc!.body.style.removeProperty('overflow');
             htmlNode.style.removeProperty('overflow-y');
             htmlNode.style.removeProperty('min-height');
 
-            if (doc.scrollingElement) {
-                doc.scrollingElement.scrollTop = offset;
+            if (doc!.scrollingElement) {
+                doc!.scrollingElement.scrollTop = offset;
             } else {
                 scrollTo(0, offset);
             }
