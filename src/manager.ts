@@ -23,7 +23,7 @@ export class MenuManager {
             return;
         }
 
-        let mnu = btn.ownerDocument.getElementById(mnuID);
+        let mnu = btn.ownerDocument!.getElementById(mnuID);
         if (!mnu) {
             return;
         }
@@ -33,7 +33,7 @@ export class MenuManager {
         this.isOpen = true;
 
         this.curButton.setAttribute('aria-expanded', 'true');
-        this.curButton.ownerDocument.documentElement.addEventListener('click', this.clickListener);
+        this.curButton.ownerDocument!.documentElement.addEventListener('click', this.clickListener);
         this.curButton.addEventListener('blur', this.handleBlur);
 
         // Before we open the menu, we need to move it in the DOM so that is
@@ -61,7 +61,7 @@ export class MenuManager {
             return;
         }
 
-        this.curButton.ownerDocument.documentElement.removeEventListener('click', this.clickListener);
+        this.curButton.ownerDocument!.documentElement.removeEventListener('click', this.clickListener);
         this.curButton.removeEventListener('blur', this.handleBlur);
         this.curButton.setAttribute('aria-expanded', 'false');
         this.curButton.setAttribute('data-dir', 'down');
@@ -329,7 +329,7 @@ export class MenuManager {
 
 
     private static getScrollOffset() {
-        let doc = this.curButton!.ownerDocument;
+        let doc = this.curButton!.ownerDocument!;
 
         if (doc.body.style.top) {
             return Math.abs(parseInt(doc.body.style.top, 10));
@@ -344,7 +344,7 @@ export class MenuManager {
 
 
     private static blockScrolling(offset : number) {
-        let doc = this.curButton!.ownerDocument;
+        let doc = this.curButton!.ownerDocument!;
         let htmlNode = doc.documentElement;
         let clientWidth = doc.body.clientWidth;
 
