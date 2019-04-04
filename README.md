@@ -96,7 +96,7 @@ Use the `ay-menu-button/dist/vue.js` file:
 
 ```javascript
   import Vue from 'vue';
-  import AyMenuButton from 'ay-menu-button/vue';
+  import AyMenuButton from 'ay-menu-button/dist/vue';
 
   Vue.component('ay-menu-button', AyMenuButton);
   //...
