@@ -7,7 +7,7 @@ export default {
     output: {
         format: 'umd',
         banner: '/*! Copyright 2017 Ayogo Health Inc. */',
-        sourceMap: true,
+        sourcemap: true,
         globals: {
             'angular': 'angular'
         }
