@@ -1,8 +1,7 @@
 /*! Copyright 2016 Ayogo Health Inc. */
 
 import vue from 'rollup-plugin-vue'; // Handle .vue SFC files
-import typescript from 'rollup-plugin-typescript';
-import commonjs from 'rollup-plugin-commonjs';
+import typescript from 'rollup-plugin-typescript2';
 
 export default {
     output: {
@@ -13,7 +12,6 @@ export default {
         typescript({
             tsconfig: 'tsconfig.es5.json'
         }),
-        commonjs(),
         vue()
     ],
 };
