@@ -2,8 +2,8 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.MenuButton = factory());
-}(this, function () { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.MenuButton = factory());
+})(this, (function () { 'use strict';
 
     /*! Copyright 2016 Ayogo Health Inc. */
     var MenuManager = (function () {
@@ -13,7 +13,7 @@
             get: function () {
                 return this.isOpen;
             },
-            enumerable: true,
+            enumerable: false,
             configurable: true
         });
         MenuManager.openMenu = function (btn, focus) {
@@ -96,7 +96,8 @@
                 this.openMenu(btn);
             }
         };
-        MenuManager.focusMenu = function () {
+        MenuManager.focusMenu = function (offset) {
+            if (offset === void 0) { offset = 1; }
             if (!this.curMenu) {
                 return;
             }
@@ -108,7 +109,14 @@
                 this.focusCount += length;
             }
             var mi = this.curMenu.children[this.focusCount % length];
-            mi.focus();
+            var role = mi.getAttribute('role');
+            if (role === 'presentation' || role === 'separator' || role === 'none') {
+                this.focusCount += offset;
+                this.focusMenu(offset);
+            }
+            else {
+                mi.focus();
+            }
         };
         MenuManager.clickMenuItem = function () {
             if (!this.curMenu) {
@@ -133,6 +141,12 @@
             menu.setAttribute('data-owner', 'button');
             menu.setAttribute('type', '');
             for (var i = 0; i < menu.children.length; i++) {
+                if (menu.children[i].tagName === 'HR') {
+                    menu.children[i].setAttribute('role', 'separator');
+                }
+                if (menu.children[i].hasAttribute('role') && menu.children[i].getAttribute('role') !== 'menuitem') {
+                    continue;
+                }
                 menu.children[i].setAttribute('tabindex', '-1');
                 menu.children[i].setAttribute('role', 'menuitem');
                 menu.children[i].setAttribute('aria-disabled', menu.children[i].hasAttribute('disabled').toString());
@@ -233,7 +247,7 @@
                 if (MenuManager.focusCount !== null) {
                     MenuManager.focusCount--;
                 }
-                MenuManager.focusMenu();
+                MenuManager.focusMenu(-1);
             }
             if (e.keyCode === 40) {
                 e.preventDefault();
@@ -241,7 +255,7 @@
                 if (MenuManager.focusCount !== null) {
                     MenuManager.focusCount++;
                 }
-                MenuManager.focusMenu();
+                MenuManager.focusMenu(1);
             }
             if (e.keyCode === 32 || e.keyCode === 13) {
                 e.preventDefault();
@@ -349,7 +363,7 @@
     }());
 
     /*! Copyright 2016 Ayogo Health Inc. */
-    var MENU_STYLES = "\nmenu[type=\"context\"],\nmenu[data-owner=\"button\"] {\n    display: none;\n    padding: 0;\n    margin: 0;\n    border: 1px solid;\n    will-change: transform;\n    transform-origin: top center;\n    transition: transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n}\n\nmenu[type=\"context\"][data-dir=\"up\"],\nmenu[data-owner=\"button\"][data-dir=\"up\"] {\n    transform-origin: bottom center;\n}\n\nmenuitem {\n    display: list-item;\n    list-style-type: none;\n    background: Menu;\n    font: menu;\n    padding: 0.25em 0.5em;\n    cursor: default;\n}\n\nmenuitem::after {\n    content: attr(label);\n}\n\nmenuitem[disabled] {\n    color: GrayText;\n}\n\nmenuitem:not([disabled]):hover,\nmenuitem:not([disabled]):focus {\n    background: Highlight;\n    color: HighlightText;\n}\n\nbutton[type=\"menu\"]::after,\nbutton[data-type=\"menu\"]:after { content: ' \u25BE'; }\n\nbutton[type=\"menu\"]:empty::after,\nbutton[data-type=\"menu\"]:empty:after { content: '\u25BE'; } /* No space character */\n\nbutton[type=\"menu\"][data-dir=\"up\"]::after,\nbutton[data-type=\"menu\"][data-dir=\"up\"]:after { content: ' \u25B4'; }\n\nbutton[type=\"menu\"][data-dir=\"up\"]:empty::after,\nbutton[data-type=\"menu\"][data-dir=\"up\"]:empty:after { content: '\u25B4'; } /* No space character */\n";
+    var MENU_STYLES = "\nmenu[type=\"context\"],\nmenu[data-owner=\"button\"] {\n    display: none;\n    padding: 0.125em;\n    margin: 0;\n    border: 1px solid;\n    background: Menu;\n    will-change: transform;\n    transform-origin: top center;\n    transition: transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n}\n\nmenu[type=\"context\"][data-dir=\"up\"],\nmenu[data-owner=\"button\"][data-dir=\"up\"] {\n    transform-origin: bottom center;\n}\n\nmenuitem {\n    display: list-item;\n    list-style-type: none;\n    background: Menu;\n    font: menu;\n    padding: 0.25em 0.5em;\n    cursor: default;\n}\n\nmenuitem::after {\n    content: attr(label);\n}\n\nmenuitem[disabled] {\n    color: GrayText;\n}\n\nmenuitem:not([disabled]):hover,\nmenuitem:not([disabled]):focus {\n    background: Highlight;\n    color: HighlightText;\n}\n\nbutton[type=\"menu\"]::after,\nbutton[data-type=\"menu\"]:after { content: ' \u25BE'; }\n\nbutton[type=\"menu\"]:empty::after,\nbutton[data-type=\"menu\"]:empty:after { content: '\u25BE'; } /* No space character */\n\nbutton[type=\"menu\"][data-dir=\"up\"]::after,\nbutton[data-type=\"menu\"][data-dir=\"up\"]:after { content: ' \u25B4'; }\n\nbutton[type=\"menu\"][data-dir=\"up\"]:empty::after,\nbutton[data-type=\"menu\"][data-dir=\"up\"]:empty:after { content: '\u25B4'; } /* No space character */\n";
     var PREFIX_STYLES = "\nmenu[type=\"context\"],\nmenu[data-owner=\"button\"] {\n    -webkit-transform-origin: top center;\n    -webkit-transition: -webkit-transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n    transition: -webkit-transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);\n}\n\nmenu[type=\"context\"][data-dir=\"up\"],\nmenu[data-owner=\"button\"][data-dir=\"up\"] {\n    -webkit-transform-origin: bottom center;\n}\n";
     var mnuStyle = document.createElement('style');
     mnuStyle.appendChild(document.createTextNode(MENU_STYLES));
@@ -384,3 +398,4 @@
     return MenuButton;
 
 }));
+//# sourceMappingURL=index.js.map

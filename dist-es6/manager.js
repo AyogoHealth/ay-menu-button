@@ -81,7 +81,7 @@ export class MenuManager {
             this.openMenu(btn);
         }
     }
-    static focusMenu() {
+    static focusMenu(offset = 1) {
         if (!this.curMenu) {
             return;
         }
@@ -93,7 +93,14 @@ export class MenuManager {
             this.focusCount += length;
         }
         let mi = this.curMenu.children[this.focusCount % length];
-        mi.focus();
+        const role = mi.getAttribute('role');
+        if (role === 'presentation' || role === 'separator' || role === 'none') {
+            this.focusCount += offset;
+            this.focusMenu(offset);
+        }
+        else {
+            mi.focus();
+        }
     }
     static clickMenuItem() {
         if (!this.curMenu) {
@@ -118,6 +125,12 @@ export class MenuManager {
         menu.setAttribute('data-owner', 'button');
         menu.setAttribute('type', '');
         for (let i = 0; i < menu.children.length; i++) {
+            if (menu.children[i].tagName === 'HR') {
+                menu.children[i].setAttribute('role', 'separator');
+            }
+            if (menu.children[i].hasAttribute('role') && menu.children[i].getAttribute('role') !== 'menuitem') {
+                continue;
+            }
             menu.children[i].setAttribute('tabindex', '-1');
             menu.children[i].setAttribute('role', 'menuitem');
             menu.children[i].setAttribute('aria-disabled', menu.children[i].hasAttribute('disabled').toString());
@@ -218,7 +231,7 @@ export class MenuManager {
             if (MenuManager.focusCount !== null) {
                 MenuManager.focusCount--;
             }
-            MenuManager.focusMenu();
+            MenuManager.focusMenu(-1);
         }
         if (e.keyCode === 40) {
             e.preventDefault();
@@ -226,7 +239,7 @@ export class MenuManager {
             if (MenuManager.focusCount !== null) {
                 MenuManager.focusCount++;
             }
-            MenuManager.focusMenu();
+            MenuManager.focusMenu(1);
         }
         if (e.keyCode === 32 || e.keyCode === 13) {
             e.preventDefault();
