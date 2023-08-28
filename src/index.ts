@@ -7,9 +7,10 @@ const MENU_STYLES = `
 menu[type="context"],
 menu[data-owner="button"] {
     display: none;
-    padding: 0;
+    padding: 0.125em;
     margin: 0;
     border: 1px solid;
+    background: Menu;
     will-change: transform;
     transform-origin: top center;
     transition: transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);

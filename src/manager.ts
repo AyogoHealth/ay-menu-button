@@ -117,7 +117,7 @@ export class MenuManager {
     }
 
 
-    static focusMenu() {
+    static focusMenu(offset = 1) {
         if (!this.curMenu) {
             return;
         }
@@ -133,7 +133,13 @@ export class MenuManager {
         }
 
         let mi = this.curMenu.children[this.focusCount % length] as HTMLElement;
-        mi.focus();
+        const role = mi.getAttribute('role');
+        if (role === 'presentation' || role === 'separator' || role === 'none') {
+            this.focusCount += offset;
+            this.focusMenu(offset);
+        } else {
+            mi.focus();
+        }
     }
 
 
@@ -169,8 +175,16 @@ export class MenuManager {
         // Try to unset the type so Firefox can make it visible :'(
         menu.setAttribute('type', '');
 
-        // Ensure the children are focusable
+        // Ensure the children are focusable, if they don't have a different role explicitly set already
         for (let i = 0; i < menu.children.length; i++) {
+            if (menu.children[i].tagName === 'HR') {
+                menu.children[i].setAttribute('role', 'separator');
+            }
+
+            if (menu.children[i].hasAttribute('role') && menu.children[i].getAttribute('role') !== 'menuitem') {
+                continue;
+            }
+
             menu.children[i].setAttribute('tabindex', '-1');
             menu.children[i].setAttribute('role', 'menuitem');
 
@@ -303,7 +317,7 @@ export class MenuManager {
             if (MenuManager.focusCount !== null) {
                 MenuManager.focusCount--;
             }
-            MenuManager.focusMenu();
+            MenuManager.focusMenu(-1);
         }
 
         // Down Arrow
@@ -314,7 +328,7 @@ export class MenuManager {
             if (MenuManager.focusCount !== null) {
                 MenuManager.focusCount++;
             }
-            MenuManager.focusMenu();
+            MenuManager.focusMenu(1);
         }
 
 
