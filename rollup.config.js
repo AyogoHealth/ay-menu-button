@@ -1,4 +1,4 @@
-/*! Copyright 2016 Ayogo Health Inc. */
+/*! Copyright 2016 - 2023 Ayogo Health Inc. */
 
 import cleanup from 'rollup-plugin-cleanup';
 import sourcemaps from 'rollup-plugin-sourcemaps';
@@ -6,7 +6,7 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 export default {
     output: {
         format: 'umd',
-        banner: '/*! Copyright 2017 Ayogo Health Inc. */',
+        banner: '/*! Copyright 2016 - 2023 Ayogo Health Inc. */',
         sourcemap: true
     },
     plugins: [
