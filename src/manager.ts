@@ -1,6 +1,7 @@
-/*! Copyright 2016 Ayogo Health Inc. */
+/*! Copyright 2016 - 2023 Ayogo Health Inc. */
 
 export class MenuManager {
+    private static supportsPopover : boolean | null             = null;
     private static curMenu : HTMLMenuElement | null             = null;
     private static curButton : HTMLButtonElement | null         = null;
     private static isOpen : boolean                             = false;
@@ -11,6 +12,13 @@ export class MenuManager {
 
     static get open() {
         return this.isOpen;
+    }
+
+    static get usePopover() {
+        if (this.supportsPopover === null) {
+            this.supportsPopover = HTMLElement.prototype.hasOwnProperty('popover');
+        }
+        return this.supportsPopover;
     }
 
     static openMenu(btn : HTMLButtonElement, focus : boolean = false) {
@@ -36,9 +44,13 @@ export class MenuManager {
         this.curButton.ownerDocument!.documentElement.addEventListener('click', this.clickListener);
         this.curButton.addEventListener('blur', this.handleBlur);
 
-        // Before we open the menu, we need to move it in the DOM so that is
-        // is directly after the button element for tab ordering
-        this.curButton.parentNode!.insertBefore(this.curMenu, this.curButton.nextSibling);
+        if (this.usePopover) {
+            this.curMenu.showPopover();
+        } else {
+            // Before we open the menu, we need to move it in the DOM so that is
+            // is directly after the button element for tab ordering
+            this.curButton.parentNode!.insertBefore(this.curMenu, this.curButton.nextSibling);
+        }
 
         let offset = this.getScrollOffset();
 
@@ -76,6 +88,9 @@ export class MenuManager {
 
         let oldMenu = this.curMenu;
         this.transitionEndHandler = () => {
+            if (this.usePopover) {
+                oldMenu.hidePopover();
+            }
             oldMenu.removeAttribute('style');
             oldMenu.removeEventListener('transitionend', this.transitionEndHandler!);
             oldMenu.removeEventListener('webkittransitionend', this.transitionEndHandler!);
@@ -167,8 +182,10 @@ export class MenuManager {
         let btnSize = btn.getBoundingClientRect();
 
         // Add the menu to the DOM for measuring
-        menu.style.display = 'block';
-        menu.style.position = 'fixed';
+        if (!this.usePopover) {
+            menu.style.display = 'block';
+            menu.style.position = 'fixed';
+        }
         menu.setAttribute('role', 'menu');
         menu.setAttribute('data-owner', 'button');
 

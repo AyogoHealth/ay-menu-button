@@ -1,4 +1,4 @@
-/*! Copyright 2016 Ayogo Health Inc. */
+/*! Copyright 2016 - 2023 Ayogo Health Inc. */
 
 import { MenuManager } from './manager';
 
