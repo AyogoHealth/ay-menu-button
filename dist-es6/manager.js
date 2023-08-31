@@ -1,7 +1,13 @@
-/*! Copyright 2016 Ayogo Health Inc. */
+/*! Copyright 2016 - 2023 Ayogo Health Inc. */
 export class MenuManager {
     static get open() {
         return this.isOpen;
+    }
+    static get usePopover() {
+        if (this.supportsPopover === null) {
+            this.supportsPopover = HTMLElement.prototype.hasOwnProperty('popover');
+        }
+        return this.supportsPopover;
     }
     static openMenu(btn, focus = false) {
         if (this.transitionEndHandler !== null) {
@@ -21,7 +27,12 @@ export class MenuManager {
         this.curButton.setAttribute('aria-expanded', 'true');
         this.curButton.ownerDocument.documentElement.addEventListener('click', this.clickListener);
         this.curButton.addEventListener('blur', this.handleBlur);
-        this.curButton.parentNode.insertBefore(this.curMenu, this.curButton.nextSibling);
+        if (this.usePopover) {
+            this.curMenu.showPopover();
+        }
+        else {
+            this.curButton.parentNode.insertBefore(this.curMenu, this.curButton.nextSibling);
+        }
         let offset = this.getScrollOffset();
         this.addMenuStyle();
         this.scrollJack = this.blockScrolling(offset);
@@ -48,6 +59,9 @@ export class MenuManager {
         }
         let oldMenu = this.curMenu;
         this.transitionEndHandler = () => {
+            if (this.usePopover) {
+                oldMenu.hidePopover();
+            }
             oldMenu.removeAttribute('style');
             oldMenu.removeEventListener('transitionend', this.transitionEndHandler);
             oldMenu.removeEventListener('webkittransitionend', this.transitionEndHandler);
@@ -119,8 +133,10 @@ export class MenuManager {
         let menu = this.curMenu;
         let btn = this.curButton;
         let btnSize = btn.getBoundingClientRect();
-        menu.style.display = 'block';
-        menu.style.position = 'fixed';
+        if (!this.usePopover) {
+            menu.style.display = 'block';
+            menu.style.position = 'fixed';
+        }
         menu.setAttribute('role', 'menu');
         menu.setAttribute('data-owner', 'button');
         menu.setAttribute('type', '');
@@ -291,6 +307,7 @@ export class MenuManager {
         };
     }
 }
+MenuManager.supportsPopover = null;
 MenuManager.curMenu = null;
 MenuManager.curButton = null;
 MenuManager.isOpen = false;

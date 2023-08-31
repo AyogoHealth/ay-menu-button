@@ -1,9 +1,14 @@
-/*! Copyright 2016 Ayogo Health Inc. */
+/*! Copyright 2016 - 2023 Ayogo Health Inc. */
+import { MenuManager } from './manager';
 import { MenuButtonBehaviour } from './button';
 const MENU_STYLES = `
+menu[type="context"]:not([popover]),
+menu[data-owner="button"]:not([popover]) {
+    display: none;
+}
+
 menu[type="context"],
 menu[data-owner="button"] {
-    display: none;
     padding: 0.125em;
     margin: 0;
     border: 1px solid;
@@ -13,8 +18,8 @@ menu[data-owner="button"] {
     transition: transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-menu[type="context"][data-dir="up"],
-menu[data-owner="button"][data-dir="up"] {
+menu[type="context"][data-dir="up"]:not([popover]),
+menu[data-owner="button"][data-dir="up"]:not([popover]) {
     transform-origin: bottom center;
 }
 
@@ -61,8 +66,8 @@ menu[data-owner="button"] {
     transition: -webkit-transform 225ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
-menu[type="context"][data-dir="up"],
-menu[data-owner="button"][data-dir="up"] {
+menu[type="context"][data-dir="up"]:not([popover]),
+menu[data-owner="button"][data-dir="up"]:not([popover]) {
     -webkit-transform-origin: bottom center;
 }
 `;
@@ -89,6 +94,16 @@ if ('WeakMap' in window) {
     gcCache = new WeakMap();
 }
 export default function MenuButton(el) {
+    if (!el.hasAttribute('menu')) {
+        throw new Error('Cannot construct a menu button without a menu attribute');
+    }
+    const menu = document.getElementById(el.getAttribute('menu'));
+    if (!menu) {
+        throw new Error(`Could not find menu element #${el.getAttribute('menu')} for button`);
+    }
+    if (MenuManager.usePopover) {
+        menu.setAttribute('popover', 'manual');
+    }
     let behaviour = new MenuButtonBehaviour(el);
     if (gcCache) {
         gcCache.set(el, behaviour);

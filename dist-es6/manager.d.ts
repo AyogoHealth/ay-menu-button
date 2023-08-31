@@ -1,5 +1,6 @@
-/*! Copyright 2016 Ayogo Health Inc. */
+/*! Copyright 2016 - 2023 Ayogo Health Inc. */
 export declare class MenuManager {
+    private static supportsPopover;
     private static curMenu;
     private static curButton;
     private static isOpen;
@@ -7,6 +8,7 @@ export declare class MenuManager {
     private static transitionEndHandler;
     private static scrollJack;
     static get open(): boolean;
+    static get usePopover(): boolean;
     static openMenu(btn: HTMLButtonElement, focus?: boolean): void;
     static closeMenu(): void;
     static toggleMenu(btn: HTMLButtonElement): void;
