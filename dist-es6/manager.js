@@ -290,6 +290,16 @@ export class MenuManager {
         if (doc.body.clientWidth < clientWidth) {
             doc.body.style.overflow = 'hidden';
         }
+        let scrollables = [];
+        let currentEl = this.curButton.parentNode;
+        while (currentEl && currentEl !== doc.body) {
+            let overflow = getComputedStyle(currentEl, null).getPropertyValue('overflow');
+            if (overflow.indexOf('scroll') !== -1 || overflow.indexOf('auto') !== -1) {
+                scrollables.push(currentEl);
+                currentEl.style.overflow = 'hidden';
+            }
+            currentEl = currentEl.parentNode;
+        }
         return function () {
             doc.body.style.removeProperty('position');
             doc.body.style.removeProperty('left');
@@ -298,6 +308,9 @@ export class MenuManager {
             doc.body.style.removeProperty('overflow');
             htmlNode.style.removeProperty('overflow-y');
             htmlNode.style.removeProperty('min-height');
+            scrollables.forEach(function (el) {
+                el.style.removeProperty('overflow');
+            });
             if (doc.scrollingElement) {
                 doc.scrollingElement.scrollTop = offset;
             }
